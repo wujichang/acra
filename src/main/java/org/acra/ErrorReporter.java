@@ -724,7 +724,8 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
         ACRA.log.d(LOG_TAG, "reportingInteractionMode=" + reportingInteractionMode +
                       " shouldDisplayToast=" + shouldDisplayToast +
                       " alwaysAcceptsReports=" + alwaysAcceptReports +
-                      " reportBuilder#mEndsApplication" + reportBuilder.mEndsApplication
+                      " reportBuilder#endsApplication=" + reportBuilder.mEndsApplication +
+                      " sendReportsAtShutDown=" +ACRA.getConfig().sendReportsAtShutdown()
         );
 
         final TimeHelper sentToastTimeMillis = new TimeHelper();
