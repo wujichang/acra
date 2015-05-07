@@ -719,6 +719,13 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
 
         final boolean shouldDisplayToast = reportingInteractionMode == ReportingInteractionMode.TOAST
             || (ACRA.getConfig().resToastText() != 0 && (reportingInteractionMode == ReportingInteractionMode.NOTIFICATION || reportingInteractionMode == ReportingInteractionMode.DIALOG));
+        final boolean alwaysAcceptReports = prefs.getBoolean(ACRA.PREF_ALWAYS_ACCEPT, false);
+
+        ACRA.log.d(LOG_TAG, "reportingInteractionMode=" + reportingInteractionMode +
+                      " shouldDisplayToast=" + shouldDisplayToast +
+                      " alwaysAcceptsReports=" + alwaysAcceptReports +
+                      " reportBuilder#mEndsApplication" + reportBuilder.mEndsApplication
+        );
 
         final TimeHelper sentToastTimeMillis = new TimeHelper();
         if (shouldDisplayToast) {
@@ -760,7 +767,7 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
 
         if (reportingInteractionMode == ReportingInteractionMode.SILENT
             || reportingInteractionMode == ReportingInteractionMode.TOAST
-            || prefs.getBoolean(ACRA.PREF_ALWAYS_ACCEPT, false)) {
+            || alwaysAcceptReports) {
 
             // Approve and then send reports now
             ACRA.log.d(LOG_TAG, "About to start ReportSenderWorker from #handleException");
@@ -804,8 +811,7 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
         // Start an AsyncTask waiting for the end of the sender.
         // Once sent, call endApplication() if reportBuilder.mEndApplication
         final SendWorker worker = sender;
-        final boolean showDirectDialog = (reportingInteractionMode == ReportingInteractionMode.DIALOG)
-            && !prefs.getBoolean(ACRA.PREF_ALWAYS_ACCEPT, false);
+        final boolean showDirectDialog = (reportingInteractionMode == ReportingInteractionMode.DIALOG) && !alwaysAcceptReports;
 
         new Thread() {
 
